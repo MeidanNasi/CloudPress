@@ -4,7 +4,7 @@ import Form from "./common/form";
 
 class RegisterForm extends Form {
   state = {
-    data: { username: "", password: "" },
+    data: { username: "", email: "", password: "" },
     errors: {}
   };
 
@@ -12,6 +12,10 @@ class RegisterForm extends Form {
     username: Joi.string()
       .required()
       .label("Username"),
+    email: Joi.string()
+      .required()
+      .email()
+      .label("Email"),
     password: Joi.string()
       .required()
       .min(5)
@@ -29,6 +33,7 @@ class RegisterForm extends Form {
         <h1>Register</h1>
         <form onSubmit={this.handleSubmit}>
           {this.renderInput("username", "Username")}
+          {this.renderInput("email", "Email")}
           {this.renderInput("password", "Password", "password")}
           {this.renderButton("Register")}
         </form>
