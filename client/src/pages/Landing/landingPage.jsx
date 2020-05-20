@@ -1,14 +1,19 @@
 import React, { useState } from "react";
-import LoginForm from "../components/loginForm";
-import RegisterForm from "./../components/registerForm";
+import LoginForm from "../../components/loginForm";
+import RegisterForm from "../../components/registerForm";
 import { Button, Modal } from "react-bootstrap";
-const LandingPage = () => {
+import img3 from "../../assets/3.png";
+
+import "./landing.css";
+
+const LandingPage = (props) => {
   const [show, setShow] = useState(false);
   const [registered, setRegistered] = useState(true);
 
   const handleClick = () => {
     setRegistered(!registered);
   };
+
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
@@ -16,9 +21,9 @@ const LandingPage = () => {
     <div className="landing">
       <div className="landing-header">
         <div className="landing-text">
+          <h1> CloudPress </h1>
           <label>
-            CloudPress
-            <p>Easiest way to deploy your wordpress website to the cloud. </p>
+            Easiest way to deploy your wordpress website to the cloud.
           </label>
 
           <p id="p1"> What is cloud?</p>
@@ -41,11 +46,12 @@ const LandingPage = () => {
             <br /> store your website in AWS servers, just by a CLICK of a
             button.{" "}
           </p>
+          <Button variant="btn btn-primary btn-lg" onClick={handleShow}>
+            Login / Register
+          </Button>
         </div>
 
-        <Button variant="btn btn-primary btn-lg" onClick={handleShow}>
-          Login / Register
-        </Button>
+        <img src={img3} alt="img3" />
 
         <Modal show={show} onHide={handleClose}>
           <Modal.Header closeButton>
@@ -54,7 +60,7 @@ const LandingPage = () => {
           <Modal.Body>
             {registered ? (
               <div>
-                <LoginForm />
+                <LoginForm history={props.history} />
                 <p id="warning" onClick={handleClick}>
                   {" "}
                   New user ? click here to register.

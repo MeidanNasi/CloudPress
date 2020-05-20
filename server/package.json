@@ -5,6 +5,7 @@
   "main": "index.js",
   "license": "private",
   "scripts": {
+    "start": "node index.js",
     "start-mongo": "./../../tools/mongodb/bin/mongod.exe --dbpath=./mongodb-data",
     "dev": "env-cmd -f ./config/dev.env nodemon src/index.js"
   },

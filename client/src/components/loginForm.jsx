@@ -2,11 +2,16 @@ import React from "react";
 import Joi from "joi-browser";
 import Form from "./common/form";
 
+
+
 class LoginForm extends Form {
-  state = {
+  constructor(props){
+    super(props);
+    this.state = {
     data: { username: "", password: "" },
     errors: {}
   };
+}
 
   schema = {
     username: Joi.string()
@@ -19,6 +24,7 @@ class LoginForm extends Form {
 
   doSubmit = () => {
     // Call the server
+    this.props.history.push('/profile')
     console.log("Submitted");
   };
 

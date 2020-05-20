@@ -1,0 +1,32 @@
+{
+  "name": "Julian Smith",
+  "email": "fakeEmail@gmail.com",
+  "password": "encryptPasswordyeah",
+  "img": "https://ecfmanufacturing.files.wordpress.com/2018/03/jerome-charmet1.jpg",
+  "projects": [
+    {
+      "id": 1,
+      "title": "Shopping Chart",
+      "url": "itstotallyfake.com",
+      "creationdate": "2.2.2020"
+    },
+    {
+      "id": 2,
+      "title": "My Beach Hotel",
+      "url": "itsSofake.com",
+      "creationdate": "2.3.2020"
+    },
+    {
+      "id": 3,
+      "title": "Music app",
+      "url": "reallllllyfake.com",
+      "creationdate": "2.4.2020"
+    },
+    {
+      "id": 4,
+      "title": "Online Store",
+      "url": "fakeasfuck.com",
+      "creationdate": "2.5.2020"
+    }
+  ]
+}
