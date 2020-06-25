@@ -2,8 +2,9 @@ const express = new require("express");
 const router = new express.Router();
 const Project = require("../models/project");
 const auth = require("../middleware/auth");
-const { userPortEnd } = require("./../../config/config");
+const { userPortEnd, workerDns, masterDns } = require("./../../config/config");
 const UserPort = require("../models/userPort");
+const createCluster = require("../utils/createCluster");
 
 // Create a new project
 router.post("/api/projects", auth, async (req, res) => {
@@ -17,6 +18,15 @@ router.post("/api/projects", auth, async (req, res) => {
   });
 
   try {
+    //TODO: test cluster creation
+    //TODO: handle createCluster async fallback (in case of exception)
+    createCluster(
+      workerDns,
+      masterDns,
+      currentPortCount,
+      req.user.email,
+      req.body.name
+    );
     await project.save();
     await UserPort.findOneAndUpdate({}, { $inc: { currentPort: 1 } });
     res.status(201).send(project);

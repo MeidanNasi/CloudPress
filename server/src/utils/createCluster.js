@@ -1,16 +1,20 @@
+const rexec = require("remote-exec");
+const fs = require("fs");
+
+//TODO: test it
+
 const sendCommandsMaster = (masterDNS, userName, projectName, portNumber) => {
-  var rexec = require("remote-exec");
-  var connection_options = {
+  const connection_options = {
     port: 22,
     username: "ubuntu",
-    privateKey: require("fs").readFileSync("./linpair.pem"),
+    privateKey: fs.readFileSync("./linpair.pem"),
   };
-  var hosts = [
+  const hosts = [
     //Master Instance
     masterDNS,
   ];
 
-  var cmds = [
+  const cmds = [
     "sudo -i sed -i -e 's/mariadb-pv/mariadb-" +
       userName +
       "-" +
@@ -90,15 +94,50 @@ const sendCommandsMaster = (masterDNS, userName, projectName, portNumber) => {
       stable/wordpress",
   ];
 
-  rexec(hosts, cmds, connection_options, function (res, err) {
+  rexec(hosts, cmds, connection_options, (err) => {
     console.log(res);
 
-    if (err) {
-      console.log(err);
+    if (!err) {
+      return;
     } else {
-      console.log("Great Success!!");
+      console.error(err);
     }
   });
 };
 
-module.exports = sendCommandsMaster;
+const createCluster = (
+  workerDNS,
+  masterDNS,
+  portNumber,
+  userName,
+  projectName
+) => {
+  const connection_options = {
+    port: 22,
+    username: "ubuntu",
+    privateKey: fs.readFileSync("./linpair.pem"),
+  };
+  const hosts = [
+    //Worker Instance
+    workerDNS,
+  ];
+
+  const workerCmds = [
+    //Worker first part
+    "sudo mkdir /data-" + userName + "-" + projectName + "",
+    "sudo chmod  -R 777 /data-" + userName + "-" + projectName + "",
+    "sudo mkdir /bitnami-" + userName + "-" + projectName + "",
+    "sudo mkdir /bitnami-" + userName + "-" + projectName + "/mariadb",
+    "sudo mkdir /bitnami-" + userName + "-" + projectName + "/wordpress",
+    "sudo chmod -R 777 /bitnami-" + userName + "-" + projectName + "/",
+  ];
+  rexec(hosts, workerCmds, connection_options, (err) => {
+    if (!err) {
+      sendCommandsMaster(masterDNS, userName, projectName, portNumber);
+    } else {
+      console.error(err);
+    }
+  });
+};
+
+module.exports = createCluster;
