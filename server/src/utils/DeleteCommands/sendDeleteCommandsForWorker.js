@@ -1,15 +1,15 @@
 const sendDeleteCommandsW = (workerDNS, userName, projectName) => {
-  var rexec = require("remote-exec");
-  var fs = require("fs");
+  const rexec = require("remote-exec");
+  const fs = require("fs");
   // see documentation for the ssh2 npm package for a list of all options
-  var connection_options = {
+  const connection_options = {
     port: 22,
     username: "ubuntu",
     privateKey: require("fs").readFileSync("./CloudProjectKeyPair.pem"),
   };
-  var hosts = [workerDNS];
+  const hosts = [workerDNS];
 
-  var cmds = [
+  const cmds = [
     "sudo rm -rf /data-" + userName + "-" + projectName + "",
     "sudo rm -rf /bitnami-" + userName + "-" + projectName + "",
   ];

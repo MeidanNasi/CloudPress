@@ -1,36 +1,36 @@
 const sendDeleteCommandsM = (masterDNS, userName, projectName) => {
-  var rexec = require("remote-exec");
-  var fs = require("fs");
+  const rexec = require("remote-exec");
+  const fs = require("fs");
   // see documentation for the ssh2 npm package for a list of all options
-  var connection_options = {
+  const connection_options = {
     port: 22,
     username: "ubuntu",
     privateKey: require("fs").readFileSync("./CloudProjectKeyPair.pem"),
   };
-  var hosts = [masterDNS];
+  const hosts = [masterDNS];
 
-  var cmds = [
+  const cmds = [
     "sudo -i helm delete --purge wordpress-" +
-      userName +
-      "-" +
-      projectName +
-      "",
+    userName +
+    "-" +
+    projectName +
+    "",
     "sudo -i kubectl delete pvc data-wordpress-" +
-      userName +
-      "-" +
-      projectName +
-      "-mariadb-0",
+    userName +
+    "-" +
+    projectName +
+    "-mariadb-0",
     "sudo -i kubectl delete pvc wordpress-" +
-      userName +
-      "-" +
-      projectName +
-      "-wordpress",
+    userName +
+    "-" +
+    projectName +
+    "-wordpress",
     "sudo -i kubectl delete pv mariadb-" + userName + "-" + projectName + "-pv",
     "sudo -i kubectl delete pv wordpress-" +
-      userName +
-      "-" +
-      projectName +
-      "-pv",
+    userName +
+    "-" +
+    projectName +
+    "-pv",
   ];
   //console.log("testing : ", cmds);
   rexec(hosts, cmds, connection_options, function (err) {

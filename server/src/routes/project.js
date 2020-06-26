@@ -2,20 +2,26 @@ const express = new require("express");
 const router = new express.Router();
 const Project = require("../models/project");
 const auth = require("../middleware/auth");
-const { userPortEnd, workerDns, masterDns } = require("./../../config/config");
+const { workerDns, masterDns } = require("./../../config/config");
 const UserPort = require("../models/userPort");
 const createCluster = require("../utils/createCluster");
 
 // Create a new project
 router.post("/api/projects", auth, async (req, res) => {
-  let currentPortCount = await UserPort.find({});
-  currentPortCount = currentPortCount[0].currentPort;
-
-  const project = new Project({
-    ...req.body,
-    owner: req.user._id,
-    port: currentPortCount + 1,
-  });
+  let newProject;
+  let nextPortCount;
+  try {
+    nextPortCount = (await UserPort.fetchCurrentPort()) + 1;
+    const project = new Project({
+      ...req.body,
+      owner: req.user._id,
+      port: nextPortCount,
+    });
+    newProject = await project.save();
+    await UserPort.setCurrentPort(nextPortCount);
+  } catch (e) {
+    res.status(400).send(e);
+  }
 
   try {
     //TODO: test cluster creation
@@ -23,15 +29,26 @@ router.post("/api/projects", auth, async (req, res) => {
     createCluster(
       workerDns,
       masterDns,
-      currentPortCount,
+      nextPortCount,
       req.user.email,
       req.body.name
     );
-    await project.save();
-    await UserPort.findOneAndUpdate({}, { $inc: { currentPort: 1 } });
-    res.status(201).send(project);
+    res.status(201).send(newProject);
   } catch (e) {
-    res.status(400).send(e);
+    //in case of failure rollback project, and port number
+    try {
+      await deleteProject({
+        user: req.user,
+        params: {
+          id: newProject._id,
+        },
+      });
+      await UserPort.setCurrentPort(nextPortCount - 1);
+      res.status(500).send(e);
+    } catch (e) {
+      res.status(500).send(e);
+    }
+    res.status(500).send(e);
   }
 });
 
@@ -92,7 +109,7 @@ router.patch("/api/projects/:id", auth, async (req, res) => {
 });
 
 //Delete project
-router.delete("/api/projects/:id", auth, async (req, res) => {
+const deleteProject = async (req, res) => {
   try {
     const project = await Project.findOneAndDelete({
       _id: req.params.id,
@@ -100,13 +117,20 @@ router.delete("/api/projects/:id", auth, async (req, res) => {
     });
 
     if (!project) {
-      return res.status(404).send();
+      if (res) {
+        return res.status(404).send();
+      }
+      throw new Error("Could not find project");
     }
-
-    res.send(project);
+    return res ? res.send(project) : undefined;
   } catch (e) {
-    res.status(500).send();
+    if (res) {
+      return res.status(500).send(e);
+    }
+    throw new Error(e);
   }
-});
+};
+
+router.delete("/api/projects/:id", auth, deleteProject);
 
 module.exports = router;

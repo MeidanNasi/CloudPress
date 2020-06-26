@@ -6,7 +6,7 @@
   "license": "private",
   "scripts": {
     "start": "node index.js",
-    "start-mongo": "./../../tools/mongodb/bin/mongod.exe --dbpath=./mongodb-data",
+    "start-mongo": "..\\..\\..\\training\\mongodb\\bin\\mongod.exe --dbpath=.\\mongodb-data",
     "dev": "env-cmd -f ./config/dev.env nodemon src/index.js"
   },
   "dependencies": {
@@ -20,6 +20,7 @@
     "validator": "^13.0.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.3"
+    "nodemon": "^2.0.3",
+    "prettier": "^2.0.5"
   }
 }

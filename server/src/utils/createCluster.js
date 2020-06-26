@@ -7,7 +7,7 @@ const sendCommandsMaster = (masterDNS, userName, projectName, portNumber) => {
   const connection_options = {
     port: 22,
     username: "ubuntu",
-    privateKey: fs.readFileSync("./linpair.pem"),
+    privateKey: fs.readFileSync("./src/utils/linpair.pem"),
   };
   const hosts = [
     //Master Instance
@@ -84,23 +84,19 @@ const sendCommandsMaster = (masterDNS, userName, projectName, portNumber) => {
       "-" +
       projectName +
       " \
-        --set wordpressUsername=admin,wordpressPassword=adminpassword,mariadb.mariadbRootPassword=secretpassword,persistence.existingClaim=wordpress-" +
+      --set wordpressUsername=admin,wordpressPassword=adminpassword,mariadb.mariadbRootPassword=secretpassword,persistence.existingClaim=wordpress-" +
       userName +
       "-" +
       projectName +
       "-wordpress,allowEmptyPassword=false, service.nodePorts.http=" +
       portNumber +
       " \
-      stable/wordpress",
+    stable/wordpress",
   ];
 
   rexec(hosts, cmds, connection_options, (err) => {
-    console.log(res);
-
-    if (!err) {
-      return;
-    } else {
-      console.error(err);
+    if (err) {
+      throw new Error(err);
     }
   });
 };
@@ -112,10 +108,13 @@ const createCluster = (
   userName,
   projectName
 ) => {
+  userName = userName.toLowerCase();
+  projectName = projectName.toLowerCase();
+
   const connection_options = {
     port: 22,
     username: "ubuntu",
-    privateKey: fs.readFileSync("./linpair.pem"),
+    privateKey: fs.readFileSync("./src/utils/linpair.pem"),
   };
   const hosts = [
     //Worker Instance
@@ -135,7 +134,7 @@ const createCluster = (
     if (!err) {
       sendCommandsMaster(masterDNS, userName, projectName, portNumber);
     } else {
-      console.error(err);
+      throw new Error(err);
     }
   });
 };
