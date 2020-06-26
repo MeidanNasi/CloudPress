@@ -10,6 +10,7 @@ const createCluster = require("../utils/createCluster");
 router.post("/api/projects", auth, async (req, res) => {
   let newProject;
   let nextPortCount;
+
   try {
     nextPortCount = (await UserPort.fetchCurrentPort()) + 1;
     const project = new Project({
@@ -26,12 +27,12 @@ router.post("/api/projects", auth, async (req, res) => {
   try {
     //TODO: test cluster creation
     //TODO: handle createCluster async fallback (in case of exception)
-    createCluster(
+
+    await createCluster(
       workerDns,
       masterDns,
-      nextPortCount,
-      req.user.email,
-      req.body.name
+      newProject._id.toString(),
+      nextPortCount
     );
     res.status(201).send(newProject);
   } catch (e) {
@@ -48,7 +49,6 @@ router.post("/api/projects", auth, async (req, res) => {
     } catch (e) {
       res.status(500).send(e);
     }
-    res.status(500).send(e);
   }
 });
 

@@ -3,7 +3,13 @@ const fs = require("fs");
 
 //TODO: test it
 
-const sendCommandsMaster = (masterDNS, userName, projectName, portNumber) => {
+const waitForCreation = async (isClusterCreated, error) => {
+  return new Promise((resolve, reject) => {
+    isClusterCreated ? resolve("Cluster created") : reject(error);
+  });
+};
+
+const sendCommandsMaster = async (masterDNS, projectId, portNumber) => {
   const connection_options = {
     port: 22,
     username: "ubuntu",
@@ -16,82 +22,54 @@ const sendCommandsMaster = (masterDNS, userName, projectName, portNumber) => {
 
   const cmds = [
     "sudo -i sed -i -e 's/mariadb-pv/mariadb-" +
-      userName +
-      "-" +
-      projectName +
+      projectId +
       "-pv/g' /tmp/mariadb-hostpath.yaml",
     "sudo -i sed -i -e 's/bitnami/bitnami-" +
-      userName +
-      "-" +
-      projectName +
+      projectId +
       "/g' /tmp/mariadb-hostpath.yaml",
     "sudo -i kubectl create -f /tmp/mariadb-hostpath.yaml",
     "sudo -i sed -i -e 's/wordpress-pv/wordpress-" +
-      userName +
-      "-" +
-      projectName +
+      projectId +
       "-pv/g' /tmp/wordpress-hostpath.yaml",
     "sudo -i sed -i -e 's/data1/data-" +
-      userName +
-      "-" +
-      projectName +
+      projectId +
       "/g' /tmp/wordpress-hostpath.yaml",
     "sudo -i kubectl create -f  /tmp/wordpress-hostpath.yaml",
     "sudo -i sed -i -e 's/data-wordpress-mariadb-0/data-wordpress-" +
-      userName +
-      "-" +
-      projectName +
+      projectId +
       "-mariadb-0/g' /tmp/wordpress-mariadb-pvc.yaml",
     "sudo -i sed -i -e 's/wordpress-wordpress/wordpress-" +
-      userName +
-      "-" +
-      projectName +
+      projectId +
       "-wordpress/g' /tmp/wordpress-pvc.yaml",
     "sudo -i kubectl create -f /tmp/wordpress-mariadb-pvc.yaml",
     "sudo -i kubectl create -f /tmp/wordpress-pvc.yaml",
     "sudo -i sed -i -e 's/mariadb-" +
-      userName +
-      "-" +
-      projectName +
+      projectId +
       "-pv/mariadb-pv/g' /tmp/mariadb-hostpath.yaml",
     "sudo -i sed -i -e 's/bitnami-" +
-      userName +
-      "-" +
-      projectName +
+      projectId +
       "/bitnami/g' /tmp/mariadb-hostpath.yaml",
     "sudo -i sed -i -e 's/wordpress-" +
-      userName +
-      "-" +
-      projectName +
+      projectId +
       "-pv/wordpress-pv/g' /tmp/wordpress-hostpath.yaml",
     "sudo -i sed -i -e 's/data-" +
-      userName +
-      "-" +
-      projectName +
+      projectId +
       "/data1/g' /tmp/wordpress-hostpath.yaml",
     "sudo -i sed -i -e 's/data-wordpress-" +
-      userName +
-      "-" +
-      projectName +
+      projectId +
       "-mariadb-0/data-wordpress-mariadb-0/g' /tmp/wordpress-mariadb-pvc.yaml",
     "sudo -i sed -i -e 's/wordpress-" +
-      userName +
-      "-" +
-      projectName +
+      projectId +
       "-wordpress/wordpress-wordpress/g' /tmp/wordpress-pvc.yaml",
     "sudo -i helm install --name wordpress-" +
-      userName +
-      "-" +
-      projectName +
+      projectId +
       " \
-      --set wordpressUsername=admin,wordpressPassword=adminpassword,mariadb.mariadbRootPassword=secretpassword,persistence.existingClaim=wordpress-" +
-      userName +
-      "-" +
-      projectName +
+--set wordpressUsername=admin,wordpressPassword=adminpassword,mariadb.mariadbRootPassword=secretpassword,persistence.existingClaim=wordpress-" +
+      projectId +
       "-wordpress,allowEmptyPassword=false, service.nodePorts.http=" +
       portNumber +
       " \
-    stable/wordpress",
+stable/wordpress",
   ];
 
   rexec(hosts, cmds, connection_options, (err) => {
@@ -101,16 +79,7 @@ const sendCommandsMaster = (masterDNS, userName, projectName, portNumber) => {
   });
 };
 
-const createCluster = (
-  workerDNS,
-  masterDNS,
-  portNumber,
-  userName,
-  projectName
-) => {
-  userName = userName.toLowerCase();
-  projectName = projectName.toLowerCase();
-
+const createCluster = async (workerDNS, masterDNS, projectId, portNumber) => {
   const connection_options = {
     port: 22,
     username: "ubuntu",
@@ -123,12 +92,12 @@ const createCluster = (
 
   const workerCmds = [
     //Worker first part
-    "sudo mkdir /data-" + userName + "-" + projectName + "",
-    "sudo chmod  -R 777 /data-" + userName + "-" + projectName + "",
-    "sudo mkdir /bitnami-" + userName + "-" + projectName + "",
-    "sudo mkdir /bitnami-" + userName + "-" + projectName + "/mariadb",
-    "sudo mkdir /bitnami-" + userName + "-" + projectName + "/wordpress",
-    "sudo chmod -R 777 /bitnami-" + userName + "-" + projectName + "/",
+    "sudo mkdir /data-" + projectId + "",
+    "sudo chmod  -R 777 /data-" + projectId + "",
+    "sudo mkdir /bitnami-" + projectId + "",
+    "sudo mkdir /bitnami-" + projectId + "/mariadb",
+    "sudo mkdir /bitnami-" + projectId + "/wordpress",
+    "sudo chmod -R 777 /bitnami-" + projectId + "/",
   ];
   rexec(hosts, workerCmds, connection_options, (err) => {
     if (!err) {
