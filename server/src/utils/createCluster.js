@@ -4,12 +4,6 @@ const fs = require("fs");
 
 //TODO: test it
 
-const waitForCreation = async (isClusterCreated, error) => {
-  return new Promise((resolve, reject) => {
-    isClusterCreated ? resolve("Cluster created") : reject(error);
-  });
-};
-
 const sendCommandsMaster = async (masterDNS, projectId, portNumber) => {
   const connection_options = {
     port: 22,
@@ -114,5 +108,7 @@ const createCluster = async (workerDNS, masterDNS, projectId, portNumber) => {
     throw e;
   }
 };
+
+
 
 module.exports = createCluster;
