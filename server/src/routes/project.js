@@ -45,9 +45,9 @@ router.post("/api/projects", auth, async (req, res) => {
         },
       });
       await UserPort.setCurrentPort(nextPortCount - 1);
-      res.status(500).send(e);
+      res.status(500).send(e.toString());
     } catch (e) {
-      res.status(500).send(e);
+      res.status(500).send(e.toString());
     }
   }
 });

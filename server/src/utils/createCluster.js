@@ -1,4 +1,5 @@
-const rexec = require("remote-exec");
+const util = require("util");
+const rexec = util.promisify(require("remote-exec"));
 const fs = require("fs");
 
 //TODO: test it
@@ -72,11 +73,14 @@ const sendCommandsMaster = async (masterDNS, projectId, portNumber) => {
 stable/wordpress",
   ];
 
-  rexec(hosts, cmds, connection_options, (err) => {
+  try {
+    const err = await rexec(hosts, cmds, connection_options);
     if (err) {
       throw new Error(err);
     }
-  });
+  } catch (e) {
+    throw e;
+  }
 };
 
 const createCluster = async (workerDNS, masterDNS, projectId, portNumber) => {
@@ -99,13 +103,16 @@ const createCluster = async (workerDNS, masterDNS, projectId, portNumber) => {
     "sudo mkdir /bitnami-" + projectId + "/wordpress",
     "sudo chmod -R 777 /bitnami-" + projectId + "/",
   ];
-  rexec(hosts, workerCmds, connection_options, (err) => {
+  try {
+    const err = await rexec(hosts, workerCmds, connection_options);
     if (!err) {
-      sendCommandsMaster(masterDNS, userName, projectName, portNumber);
+      await sendCommandsMaster(masterDNS, projectId, portNumber);
     } else {
       throw new Error(err);
     }
-  });
+  } catch (e) {
+    throw e;
+  }
 };
 
 module.exports = createCluster;
