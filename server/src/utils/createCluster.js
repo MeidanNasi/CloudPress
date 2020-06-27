@@ -10,12 +10,9 @@ const sendCommandsMaster = async (masterDNS, projectId, portNumber) => {
     username: "ubuntu",
     privateKey: fs.readFileSync("./src/utils/linpair.pem"),
   };
-  const hosts = [
-    //Master Instance
-    masterDNS,
-  ];
+  const hosts = [masterDNS];
 
-  const cmds = [
+  const masterCmds = [
     "sudo -i sed -i -e 's/mariadb-pv/mariadb-" +
       projectId +
       "-pv/g' /tmp/mariadb-hostpath.yaml",
@@ -68,7 +65,7 @@ stable/wordpress",
   ];
 
   try {
-    const err = await rexec(hosts, cmds, connection_options);
+    const err = await rexec(hosts, masterCmds, connection_options);
     if (err) {
       throw new Error(err);
     }
@@ -83,13 +80,9 @@ const createCluster = async (workerDNS, masterDNS, projectId, portNumber) => {
     username: "ubuntu",
     privateKey: fs.readFileSync("./src/utils/linpair.pem"),
   };
-  const hosts = [
-    //Worker Instance
-    workerDNS,
-  ];
+  const hosts = [workerDNS];
 
   const workerCmds = [
-    //Worker first part
     "sudo mkdir /data-" + projectId + "",
     "sudo chmod  -R 777 /data-" + projectId + "",
     "sudo mkdir /bitnami-" + projectId + "",
@@ -108,7 +101,5 @@ const createCluster = async (workerDNS, masterDNS, projectId, portNumber) => {
     throw e;
   }
 };
-
-
 
 module.exports = createCluster;
