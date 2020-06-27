@@ -6,7 +6,7 @@ const createMaster = async (masterDNS, projectId, portNumber) => {
   const connection_options = {
     port: 22,
     username: "ubuntu",
-    privateKey: fs.readFileSync("./src/utils/linpair.pem"),
+    privateKey: fs.readFileSync("./src/aws/linpair.pem"),
   };
   const hosts = [masterDNS];
 
@@ -52,14 +52,12 @@ const createMaster = async (masterDNS, projectId, portNumber) => {
       projectId +
       "-wordpress/wordpress-wordpress/g' /tmp/wordpress-pvc.yaml",
     "sudo -i helm install --name wordpress-" +
-      projectId +
-      " \
---set wordpressUsername=admin,wordpressPassword=adminpassword,mariadb.mariadbRootPassword=secretpassword,persistence.existingClaim=wordpress-" +
+      projectId + " \ " +
+      "--set wordpressUsername=admin,wordpressPassword=adminpassword,mariadb.mariadbRootPassword=secretpassword,persistence.existingClaim=wordpress-" +
       projectId +
       "-wordpress,allowEmptyPassword=false, service.nodePorts.http=" +
-      portNumber +
-      " \
-stable/wordpress",
+      portNumber + " \ " +
+      "stable/wordpress",
   ];
 
   try {
@@ -76,14 +74,14 @@ const createCluster = async (workerDNS, masterDNS, projectId, portNumber) => {
   const connection_options = {
     port: 22,
     username: "ubuntu",
-    privateKey: fs.readFileSync("./src/utils/linpair.pem"),
+    privateKey: fs.readFileSync("./src/aws/linpair.pem"),
   };
   const hosts = [workerDNS];
 
   const workerCmds = [
-    "sudo mkdir /data-" + projectId + "",
-    "sudo chmod  -R 777 /data-" + projectId + "",
-    "sudo mkdir /bitnami-" + projectId + "",
+    "sudo mkdir /data-" + projectId,
+    "sudo chmod  -R 777 /data-" + projectId,
+    "sudo mkdir /bitnami-" + projectId,
     "sudo mkdir /bitnami-" + projectId + "/mariadb",
     "sudo mkdir /bitnami-" + projectId + "/wordpress",
     "sudo chmod -R 777 /bitnami-" + projectId + "/",
@@ -105,7 +103,7 @@ const deleteMaster = async (masterDNS, projectId) => {
   const connection_options = {
     port: 22,
     username: "ubuntu",
-    privateKey: fs.readFileSync("./src/utils/linpair.pem"),
+    privateKey: fs.readFileSync("./src/aws/linpair.pem"),
   };
   const hosts = [masterDNS];
   const masterCmds = [
@@ -131,7 +129,7 @@ const deleteCluster = async (workerDNS, masterDNS, projectId) => {
   const connection_options = {
     port: 22,
     username: "ubuntu",
-    privateKey: fs.readFileSync("./src/utils/linpair.pem"),
+    privateKey: fs.readFileSync("./src/aws/linpair.pem"),
   };
   const hosts = [workerDNS];
 
