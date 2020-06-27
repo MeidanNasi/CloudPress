@@ -26,9 +26,6 @@ router.post("/api/projects", auth, async (req, res) => {
   }
 
   try {
-    //TODO: test cluster creation
-    //TODO: handle createCluster async fallback (in case of exception)
-
     await createCluster(
       workerDns,
       masterDns,
@@ -39,7 +36,7 @@ router.post("/api/projects", auth, async (req, res) => {
   } catch (e) {
     //in case of failure rollback project, and port number
     try {
-      await deleteProject({
+      await deleteProjectFromDb({
         user: req.user,
         params: {
           id: newProject._id,
@@ -117,7 +114,7 @@ router.patch("/api/projects/:id", auth, async (req, res) => {
 });
 
 //Delete project
-const deleteProject = async (req, res) => {
+const deleteProjectFromDb = async (req, res) => {
   try {
     const project = await Project.findOneAndDelete({
       _id: req.params.id,
@@ -153,7 +150,7 @@ router.delete("/api/projects/:id", auth, async (req, res) => {
 
   try {
     await deleteCluster(workerDns, masterDns, req.params.id);
-    await deleteProject(req, res);
+    await deleteProjectFromDb(req, res);
   } catch (e) {
     return res.status(500).send(e);
   }

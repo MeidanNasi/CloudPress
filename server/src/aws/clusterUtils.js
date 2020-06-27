@@ -12,52 +12,52 @@ const createMaster = async (masterDNS, projectId, portNumber) => {
 
   const masterCmds = [
     "sudo -i sed -i -e 's/mariadb-pv/mariadb-" +
-      projectId +
-      "-pv/g' /tmp/mariadb-hostpath.yaml",
+    projectId +
+    "-pv/g' /tmp/mariadb-hostpath.yaml",
     "sudo -i sed -i -e 's/bitnami/bitnami-" +
-      projectId +
-      "/g' /tmp/mariadb-hostpath.yaml",
+    projectId +
+    "/g' /tmp/mariadb-hostpath.yaml",
     "sudo -i kubectl create -f /tmp/mariadb-hostpath.yaml",
     "sudo -i sed -i -e 's/wordpress-pv/wordpress-" +
-      projectId +
-      "-pv/g' /tmp/wordpress-hostpath.yaml",
+    projectId +
+    "-pv/g' /tmp/wordpress-hostpath.yaml",
     "sudo -i sed -i -e 's/data1/data-" +
-      projectId +
-      "/g' /tmp/wordpress-hostpath.yaml",
+    projectId +
+    "/g' /tmp/wordpress-hostpath.yaml",
     "sudo -i kubectl create -f  /tmp/wordpress-hostpath.yaml",
     "sudo -i sed -i -e 's/data-wordpress-mariadb-0/data-wordpress-" +
-      projectId +
-      "-mariadb-0/g' /tmp/wordpress-mariadb-pvc.yaml",
+    projectId +
+    "-mariadb-0/g' /tmp/wordpress-mariadb-pvc.yaml",
     "sudo -i sed -i -e 's/wordpress-wordpress/wordpress-" +
-      projectId +
-      "-wordpress/g' /tmp/wordpress-pvc.yaml",
+    projectId +
+    "-wordpress/g' /tmp/wordpress-pvc.yaml",
     "sudo -i kubectl create -f /tmp/wordpress-mariadb-pvc.yaml",
     "sudo -i kubectl create -f /tmp/wordpress-pvc.yaml",
     "sudo -i sed -i -e 's/mariadb-" +
-      projectId +
-      "-pv/mariadb-pv/g' /tmp/mariadb-hostpath.yaml",
+    projectId +
+    "-pv/mariadb-pv/g' /tmp/mariadb-hostpath.yaml",
     "sudo -i sed -i -e 's/bitnami-" +
-      projectId +
-      "/bitnami/g' /tmp/mariadb-hostpath.yaml",
+    projectId +
+    "/bitnami/g' /tmp/mariadb-hostpath.yaml",
     "sudo -i sed -i -e 's/wordpress-" +
-      projectId +
-      "-pv/wordpress-pv/g' /tmp/wordpress-hostpath.yaml",
+    projectId +
+    "-pv/wordpress-pv/g' /tmp/wordpress-hostpath.yaml",
     "sudo -i sed -i -e 's/data-" +
-      projectId +
-      "/data1/g' /tmp/wordpress-hostpath.yaml",
+    projectId +
+    "/data1/g' /tmp/wordpress-hostpath.yaml",
     "sudo -i sed -i -e 's/data-wordpress-" +
-      projectId +
-      "-mariadb-0/data-wordpress-mariadb-0/g' /tmp/wordpress-mariadb-pvc.yaml",
+    projectId +
+    "-mariadb-0/data-wordpress-mariadb-0/g' /tmp/wordpress-mariadb-pvc.yaml",
     "sudo -i sed -i -e 's/wordpress-" +
-      projectId +
-      "-wordpress/wordpress-wordpress/g' /tmp/wordpress-pvc.yaml",
+    projectId +
+    "-wordpress/wordpress-wordpress/g' /tmp/wordpress-pvc.yaml",
     "sudo -i helm install --name wordpress-" +
-      projectId + " \ " +
-      "--set wordpressUsername=admin,wordpressPassword=adminpassword,mariadb.mariadbRootPassword=secretpassword,persistence.existingClaim=wordpress-" +
-      projectId +
-      "-wordpress,allowEmptyPassword=false, service.nodePorts.http=" +
-      portNumber + " \ " +
-      "stable/wordpress",
+    projectId + "\ " +
+    "--set wordpressUsername=admin,wordpressPassword=adminpassword,mariadb.mariadbRootPassword=secretpassword,persistence.existingClaim=wordpress-" +
+    projectId +
+    "-wordpress,allowEmptyPassword=false,service.nodePorts.http=" +
+    portNumber + "\ " +
+    "stable/wordpress",
   ];
 
   try {
@@ -150,4 +150,4 @@ const deleteCluster = async (workerDNS, masterDNS, projectId) => {
   }
 };
 
-module.exports = { createCluster, deleteCluster };
+module.exports = {createCluster, deleteCluster};
