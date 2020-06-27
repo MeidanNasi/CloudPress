@@ -12,6 +12,10 @@ const projectSchema = new mongoose.Schema(
       required: true,
       ref: "User",
     },
+    ip: {
+      type: String,
+      required: true,
+    },
     port: {
       type: Number,
       required: true,

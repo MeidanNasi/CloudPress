@@ -2,9 +2,7 @@ const util = require("util");
 const rexec = util.promisify(require("remote-exec"));
 const fs = require("fs");
 
-//TODO: test it
-
-const sendCommandsMaster = async (masterDNS, projectId, portNumber) => {
+const createMaster = async (masterDNS, projectId, portNumber) => {
   const connection_options = {
     port: 22,
     username: "ubuntu",
@@ -93,7 +91,7 @@ const createCluster = async (workerDNS, masterDNS, projectId, portNumber) => {
   try {
     const err = await rexec(hosts, workerCmds, connection_options);
     if (!err) {
-      await sendCommandsMaster(masterDNS, projectId, portNumber);
+      await createMaster(masterDNS, projectId, portNumber);
     } else {
       throw new Error(err);
     }
@@ -102,4 +100,56 @@ const createCluster = async (workerDNS, masterDNS, projectId, portNumber) => {
   }
 };
 
-module.exports = createCluster;
+const deleteMaster = async (masterDNS, projectId) => {
+  // see documentation for the ssh2 npm package for a list of all options
+  const connection_options = {
+    port: 22,
+    username: "ubuntu",
+    privateKey: fs.readFileSync("./src/utils/linpair.pem"),
+  };
+  const hosts = [masterDNS];
+  const masterCmds = [
+    "sudo -i helm delete --purge wordpress-" + projectId,
+    "sudo -i kubectl delete pvc data-wordpress-" + projectId + "-mariadb-0",
+    "sudo -i kubectl delete pvc wordpress-" + projectId + "-wordpress",
+    "sudo -i kubectl delete pv mariadb-" + projectId + "-pv",
+    "sudo -i kubectl delete pv wordpress-" + projectId + "-pv",
+  ];
+
+  try {
+    const err = await rexec(hosts, masterCmds, connection_options);
+    if (err) {
+      throw new Error(err);
+    }
+  } catch (e) {
+    throw e;
+  }
+};
+
+const deleteCluster = async (workerDNS, masterDNS, projectId) => {
+  // see documentation for the ssh2 npm package for a list of all options
+  const connection_options = {
+    port: 22,
+    username: "ubuntu",
+    privateKey: fs.readFileSync("./src/utils/linpair.pem"),
+  };
+  const hosts = [workerDNS];
+
+  const workerCmds = [
+    "sudo rm -rf /data-" + projectId,
+    "sudo rm -rf /bitnami-" + projectId,
+  ];
+
+  try {
+    const err = await rexec(hosts, workerCmds, connection_options);
+    if (!err) {
+      await deleteMaster(masterDNS, projectId);
+    } else {
+      throw new Error(err);
+    }
+  } catch (e) {
+    throw e;
+  }
+};
+
+module.exports = { createCluster, deleteCluster };

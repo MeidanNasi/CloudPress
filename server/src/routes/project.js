@@ -4,7 +4,7 @@ const Project = require("../models/project");
 const auth = require("../middleware/auth");
 const { workerDns, masterDns } = require("./../../config/config");
 const UserPort = require("../models/userPort");
-const createCluster = require("../utils/createCluster");
+const { createCluster, deleteCluster } = require("../aws/clusterUtils");
 
 // Create a new project
 router.post("/api/projects", auth, async (req, res) => {
@@ -16,6 +16,7 @@ router.post("/api/projects", auth, async (req, res) => {
     const project = new Project({
       ...req.body,
       owner: req.user._id,
+      ip: workerDns,
       port: nextPortCount,
     });
     newProject = await project.save();
@@ -53,20 +54,27 @@ router.post("/api/projects", auth, async (req, res) => {
 });
 
 // Get project by id
-router.get("/api/projects/:id", auth, async (req, res) => {
+const getProject = async (req, res) => {
   const _id = req.params.id;
 
   try {
     const project = await Project.findOne({ _id, owner: req.user._id });
 
     if (!project) {
-      return res.status(404).send();
+      if (res) {
+        return res.status(404).send();
+      }
+      throw new Error("Could not find project");
     }
-    res.send(project);
+    return res ? res.send(project) : project;
   } catch (e) {
-    res.status(500).send(e);
+    if (res) {
+      return res.status(500).send(e);
+    }
+    throw new Error(e);
   }
-});
+};
+router.get("/api/projects/:id", auth, getProject);
 
 // Get all projects
 router.get("/api/projects", auth, async (req, res) => {
@@ -122,7 +130,7 @@ const deleteProject = async (req, res) => {
       }
       throw new Error("Could not find project");
     }
-    return res ? res.send(project) : undefined;
+    return res ? res.status(200).send(project) : undefined;
   } catch (e) {
     if (res) {
       return res.status(500).send(e);
@@ -130,7 +138,25 @@ const deleteProject = async (req, res) => {
     throw new Error(e);
   }
 };
+router.delete("/api/projects/:id", auth, async (req, res) => {
+  //Ensuring project exists
+  try {
+    await getProject({
+      user: req.user,
+      params: {
+        id: req.params.id,
+      },
+    });
+  } catch (e) {
+    return res.status(404).send(e);
+  }
 
-router.delete("/api/projects/:id", auth, deleteProject);
+  try {
+    await deleteCluster(workerDns, masterDns, req.params.id);
+    await deleteProject(req, res);
+  } catch (e) {
+    return res.status(500).send(e);
+  }
+});
 
 module.exports = router;
