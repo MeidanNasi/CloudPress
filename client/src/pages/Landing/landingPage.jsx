@@ -35,7 +35,6 @@ const LandingPage = (props) => {
             using cloud <br /> computing, users and companies don't have to
             manage physical servers themselves or run software <br />{" "}
             applications on their own machines.
-            <hr />
           </p>
           <p id="p1"> Why CloudPress?</p>
           <p id="p2">
@@ -68,7 +67,7 @@ const LandingPage = (props) => {
               </div>
             ) : (
               <div>
-                <RegisterForm />
+                <RegisterForm history={props.history} />
                 <p id="warning" onClick={handleClick}>
                   {" "}
                   Already registered ? click here to log-in.

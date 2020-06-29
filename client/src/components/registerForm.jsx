@@ -2,29 +2,31 @@ import React from "react";
 import Joi from "joi-browser";
 import Form from "./common/form";
 
+import { register } from ".././services/userService";
+
 class RegisterForm extends Form {
-  state = {
-    data: { username: "", email: "", password: "" },
-    errors: {}
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: { username: "", email: "", password: "" },
+      errors: {},
+    };
+  }
 
   schema = {
-    username: Joi.string()
-      .required()
-      .label("Username"),
-    email: Joi.string()
-      .required()
-      .email()
-      .label("Email"),
-    password: Joi.string()
-      .required()
-      .min(5)
-      .label("Password")
+    username: Joi.string().required().label("Username"),
+    email: Joi.string().required().email().label("Email"),
+    password: Joi.string().required().min(5).label("Password"),
   };
 
-  doSubmit = () => {
-    // Call the server
-    console.log("Submitted");
+  doSubmit = async () => {
+    try {
+      const user = await register(this.state.data);
+      this.props.history.push("/profile");
+    } catch (error) {
+      console.log(error);
+      alert("User already exsits.");
+    }
   };
 
   render() {

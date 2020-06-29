@@ -1,37 +1,85 @@
 import React, { useEffect, useState } from "react";
-import { Button } from "react-bootstrap";
 
-import Card from "../../components/card";
+import { Button, ProgressBar } from "react-bootstrap";
+import SweetAlert from "react-bootstrap-sweetalert";
+
 import { Headerback } from "../../components/svg/Headerback";
+import Card from "../../components/card";
+
 import Logo from "../../assets/wlogo.png";
 import img1 from "../../assets/1.png";
 import img2 from "../../assets/2.png";
-import fakeUser from "../../fakeUser.json";
+
+import {
+  createProject,
+  getProjects,
+  removeProject,
+} from "../../services/projectsService";
+import { logout, getCurrentUserName } from "../../services/authService";
 
 import "./profile.css";
-import Avatar from "../../components/avatar";
 
 const Profile = (props) => {
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState(null);
+  const [projects, setProjects] = useState(null);
+  const [url, setUrl] = useState(null);
+  const [showInputAlert, setshowInputAlert] = useState(false);
+  const [showSuccessAlert, setshowSuccessAlert] = useState(false);
+  const [showFailureAlert, setshowFailureAlert] = useState(false);
+  const [showLoadingAlert, setshowLoadingAlert] = useState(false);
+  const [progressTime, setProgressTime] = useState(0);
 
   useEffect(() => {
-    setUser(fakeUser);
+    getUserName();
+    getData();
   }, []);
 
+  const getUserName = async () => {
+    const { data } = await getCurrentUserName();
+    data ? setUser(data.email) : setUser(null);
+  };
+  const getData = async () => {
+    const items = await getProjects();
+    items ? setProjects(items.data) : setProjects([]);
+  };
   const handleCreate = () => {
-    // send request to server ...
-    console.log("create");
+    setshowInputAlert(true);
   };
 
   const handleLogOut = () => {
-    // delete jwt from localstorage..
-    console.log("log-out");
+    logout();
+    window.location.reload(true);
   };
-  const handleRemove = (id) => {
-    // ask the server to remove the project with the given id..
-    console.log("remove");
+  const handleRemove = async (id) => {
+    const res = await removeProject(id);
+    if (!res) {
+      setshowFailureAlert(true);
+      return;
+    }
+    const filtered = projects.filter((proj) => proj._id != id);
+    setProjects(filtered);
   };
-
+  const handleOkClicked = async (input) => {
+    setshowInputAlert(false);
+    try {
+      const res = await createProject(input); // creating project with given name.
+      setUrl(res);
+      res ? setshowSuccessAlert(true) : setshowFailureAlert(true);
+    } catch (error) {
+      console.log(error);
+      showFailureAlert(true);
+    }
+  };
+  const progress = () => {
+    setshowLoadingAlert(true);
+    const interval = setInterval(() => {
+      setProgressTime((prevState) => prevState + 1);
+      if (progressTime >= 100) clearInterval(interval);
+    }, 1000);
+    interval();
+    setshowLoadingAlert(false);
+    setshowSuccessAlert(true);
+  };
   return (
     <React.Fragment>
       <div className="body">
@@ -41,8 +89,7 @@ const Profile = (props) => {
             <p onClick={handleLogOut}>Logout</p>
           </div>
           <div className="header-content">
-            <h1> Hello, {user.name}!</h1>
-            <Avatar img={user.img} />
+            {user ? <h1> Hello, {user}!</h1> : null}
           </div>
           <Headerback />
         </header>
@@ -79,19 +126,61 @@ const Profile = (props) => {
         <div className="projects-conatiner">
           <h1> My Projects </h1>
           <div className="projects-cards">
-            {user.projects
-              ? user.projects.map((item) => (
+            {projects
+              ? projects.map((item) => (
                   <Card
-                    title={item.title}
-                    url={item.url}
-                    creationDate={item.creationdate}
-                    remove={handleRemove(item.id)}
+                    key={item._id}
+                    title={item.name}
+                    url={item.ip + ":" + item.port}
+                    creationDate={item.createdAt}
+                    remove={() => {
+                      handleRemove(item._id);
+                    }}
                   />
                 ))
-              : null}
+              : "Loading..."}
           </div>
         </div>
       </div>
+
+      {showInputAlert && (
+        <SweetAlert
+          input
+          cancelBtnBsStyle="default"
+          title="Name of project"
+          placeHolder="Write your desired name"
+          onConfirm={(input) => {
+            handleOkClicked(input);
+          }}
+        >
+          Write your desired name
+        </SweetAlert>
+      )}
+
+      {showSuccessAlert && (
+        <SweetAlert
+          success
+          title="Done!"
+          onConfirm={() => setshowSuccessAlert(false)}
+        >
+          Please Access to: {url}
+        </SweetAlert>
+      )}
+
+      {showFailureAlert && (
+        <SweetAlert
+          danger
+          title="Something went worng"
+          onConfirm={() => setshowFailureAlert(false)}
+        >
+          Please try again later.
+        </SweetAlert>
+      )}
+      {showLoadingAlert && (
+        <SweetAlert title={"Loading..."}>
+          <ProgressBar animated variant="success" now={progressTime} />
+        </SweetAlert>
+      )}
     </React.Fragment>
   );
 };

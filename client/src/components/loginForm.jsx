@@ -1,31 +1,30 @@
 import React from "react";
 import Joi from "joi-browser";
 import Form from "./common/form";
-
-
+import { login } from "../services/authService";
 
 class LoginForm extends Form {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
-    data: { username: "", password: "" },
-    errors: {}
-  };
-}
+      data: { email: "", password: "" },
+      errors: {},
+    };
+  }
 
   schema = {
-    username: Joi.string()
-      .required()
-      .label("Username"),
-    password: Joi.string()
-      .required()
-      .label("Password")
+    email: Joi.string().email().required().label("Email"),
+    password: Joi.string().required().label("Password"),
   };
 
-  doSubmit = () => {
-    // Call the server
-    this.props.history.push('/profile')
-    console.log("Submitted");
+  doSubmit = async () => {
+    try {
+      const user = await login(this.state.data.email, this.state.data.password);
+      this.props.history.push("/profile");
+      console.log(user);
+    } catch (error) {
+      alert("User Doesnt Exists.");
+    }
   };
 
   render() {
@@ -33,7 +32,7 @@ class LoginForm extends Form {
       <div>
         <h1>Login</h1>
         <form onSubmit={this.handleSubmit}>
-          {this.renderInput("username", "Username")}
+          {this.renderInput("email", "Email")}
           {this.renderInput("password", "Password", "password")}
           {this.renderButton("Login")}
         </form>

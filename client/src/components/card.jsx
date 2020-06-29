@@ -17,10 +17,21 @@ function Card({ title, url, creationDate, remove }) {
             {title}
           </h3>
           <h6 className="card-subtitle mb-2 text-muted">{creationDate}</h6>
-          <a href={url} onClick={remove} className="card-link">
+          <a
+            style={{ color: "blue", cursor: "pointer" }}
+            onClick={remove}
+            className="card-link"
+          >
             Remove
           </a>
-          <a href={url} className="card-link">
+          <a
+            style={{ color: "blue", cursor: "pointer" }}
+            onClick={() => {
+              console.log(url);
+              window.open("http://" + url, "_blank").focus();
+            }}
+            className="card-link"
+          >
             Link to site
           </a>
         </div>

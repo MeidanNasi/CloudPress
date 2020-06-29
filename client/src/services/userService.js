@@ -7,10 +7,11 @@ const tokenKey = "token";
 
 // register a user and save its jwt to localstorage.
 export async function register(user) {
-  const { data: jwt }  = await httpService.post(apiEndpoint, {
+  const { data } = await httpService.post(apiEndpoint, {
     email: user.email,
     password: user.password,
-    name: user.name
   });
+  const jwt = data.token;
   localStorage.setItem(tokenKey, jwt);
+  return data.user;
 }
