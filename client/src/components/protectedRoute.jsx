@@ -1,17 +1,18 @@
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
-import auth from '../services/authService'
-const ProtectedRoute = ({ component: Component, path,  render, ...rest }) => {
+import auth from "../services/authService";
+const ProtectedRoute = ({ component: Component, path, render, ...rest }) => {
   return (
     <Route
       {...rest} // includes path.
-      render={props => {
-        if (!auth.getCurrentUser()) // in case a user isnt authenticated, redirect him to landingpage. 
+      render={(props) => {
+        if (!auth.getCurrentUser())
+          // in case a user isnt authenticated, redirect him to landingpage.
           return (
             <Redirect
               to={{
                 pathname: "/",
-                state: { from: props.location }
+                state: { from: props.location },
               }}
             />
           );
@@ -22,4 +23,3 @@ const ProtectedRoute = ({ component: Component, path,  render, ...rest }) => {
 };
 
 export default ProtectedRoute;
-

@@ -1,11 +1,1 @@
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500&family=Roboto:wght@900&display=swap");
-
-.avatar {
-  vertical-align: middle;
-  width: 20vh;
-  height: 20vh;
-  border-radius: 50%;
-  border-style: solid;
-  border-color: black;
-  justify-self: center;
-}

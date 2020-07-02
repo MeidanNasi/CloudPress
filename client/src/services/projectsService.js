@@ -2,17 +2,15 @@ import httpService from "./httpService";
 import { apiUrl } from "../config.json";
 
 const apiEndpoint = apiUrl + "/projects";
-const authHeader = {
-  Authorization: `Bearer ${localStorage.getItem("token")}`,
-};
 
 // creating new project
 export async function createProject(projName) {
+  const token = localStorage.getItem("token");
   try {
     const res = await httpService.post(
       apiEndpoint,
       { name: projName },
-      { headers: authHeader }
+      { headers: { Authorization: `Bearer ${token}` } }
     );
     return res.data.ip + ":" + res.data.port;
   } catch (error) {
@@ -21,18 +19,23 @@ export async function createProject(projName) {
 }
 // getting all projects
 export async function getProjects() {
+  const token = localStorage.getItem("token");
   try {
-    const res = await httpService.get(apiEndpoint, { headers: authHeader });
-    return res;
+    const response = await httpService.get(apiEndpoint, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    return response.data;
   } catch (error) {
     console.log(error);
   }
 }
 // removing project by given id
 export async function removeProject(id) {
+  const token = localStorage.getItem("token");
   try {
     const res = await httpService.delete(apiEndpoint + "/" + id, {
-      headers: authHeader,
+      headers: { Authorization: `Bearer ${token}` },
     });
     console.log("deleted", res);
     return res;

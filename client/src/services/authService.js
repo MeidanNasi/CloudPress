@@ -4,9 +4,6 @@ import { apiUrl } from "../config.json";
 
 const apiEndpoint = apiUrl + "/users/";
 const tokenKey = "token";
-const authHeader = {
-  Authorization: `Bearer ${localStorage.getItem("token")}`,
-};
 
 httpService.setJwt(getJwt());
 
@@ -16,9 +13,9 @@ export async function login(email, password) {
     email,
     password,
   });
-  const jwt = data.token;
-  const user = data.user;
-  localStorage.setItem(tokenKey, jwt);
+
+  const { token, user } = data;
+  localStorage.setItem(tokenKey, token);
   return user;
 }
 
@@ -42,10 +39,10 @@ export function getCurrentUser() {
 }
 export async function getCurrentUserName() {
   try {
-    const user = await httpService.get(apiEndpoint + "me", {
-      headers: authHeader,
+    const response = await httpService.get(apiEndpoint + "me", {
+      headers: { Authorization: `Bearer ${getJwt()}` },
     });
-    return user;
+    return response.data.email;
   } catch (ex) {
     return null;
   }

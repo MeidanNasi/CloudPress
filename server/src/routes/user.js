@@ -6,7 +6,6 @@ const auth = require("../middleware/auth");
 // Creates new user
 router.post("/api/users", async (req, res) => {
   const user = new User(req.body);
-
   try {
     await user.save();
     const token = await user.generateAuthToken();

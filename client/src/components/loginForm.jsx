@@ -19,11 +19,10 @@ class LoginForm extends Form {
 
   doSubmit = async () => {
     try {
-      const user = await login(this.state.data.email, this.state.data.password);
+      await login(this.state.data.email, this.state.data.password);
       this.props.history.push("/profile");
-      console.log(user);
     } catch (error) {
-      alert("User Doesnt Exists.");
+      alert(error);
     }
   };
 

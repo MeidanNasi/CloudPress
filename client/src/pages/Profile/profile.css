@@ -1,30 +1,14 @@
 @import url("https://fonts.googleapis.com/css?family=Raleway:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i");
 
 .body {
-  margin: 0;
-  padding: 0;
-  font-family: "Raleway", sans-serif;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  background-image: url("../../assets/profilebg.jpg");
+  background-size: 100%;
+  background-repeat: no-repeat;
+  height: 110vh;
 }
 
 header {
-  display: flex;
-  align-content: center;
-  justify-content: center;
-  position: relative;
-  height: 65vh;
   width: 100%;
-  background: #0b345d;
-  background-image: linear-gradient(
-    155deg,
-    #66aad8 0%,
-    #20af9c 40%,
-    #23a875 100%
-  );
-  z-index: 0;
 }
 
 header h1 {
@@ -34,40 +18,19 @@ header h1 {
 .header-content {
   text-align: center;
 }
-svg {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  height: auto;
-}
-
 .navbar {
-  position: absolute;
   top: 0;
   height: 5vh;
   width: 100%;
-  background-color: transparent;
-  padding-top: 2vh;
-  z-index: 2;
-  opacity: 0.9;
 }
 .navbar p {
-  margin-left: 190vh;
+  text-align: end;
   color: white;
   cursor: pointer;
 }
 .navbar p:hover {
-  color: black;
+  color: rgb(71, 104, 255);
   font-weight: bold;
-}
-
-.navbar ul li:hover {
-  background-color: #285d80;
-  cursor: pointer;
-}
-#wlogo {
-  position: absolute;
-  height: 20vh;
 }
 
 .create-container {
@@ -76,25 +39,26 @@ svg {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 1vh 0.3vh 2vh 0.1vh rgba(0, 0, 0, 0.3);
-  border-radius: 5px;
-  position: absolute;
-  margin-top: 30vh;
-  background-color: white;
-  z-index: 1;
+  color: white;
+}
+.create-container label {
+  font-size: 4em;
+  margin-bottom: 5vh;
 }
 .txt-container {
   display: flex;
   flex-direction: column;
   text-align: left;
-  padding: 5vh;
+  margin-top: 20vh;
 }
 .txt-container h1 {
-  margin-bottom: 2vh;
+  margin-bottom: 3vh;
+  font-family: "Raleway", sans-serif;
 }
 
 .txt-container p {
-  font-size: 2vh;
+  font-size: 2.5vh;
+  font-family: "Raleway", sans-serif;
 }
 
 #createbtn {
@@ -105,19 +69,16 @@ svg {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 50vh;
   color: white;
-  height: 80vh;
+  height: 100vh;
   width: 100%;
   background-image: linear-gradient(
     177deg,
-    #1c9164 70%,
+    rgb(110, 196, 228) 100%,
     #ffffff calc(70% + 2px)
   );
 }
-#img2 {
-  margin-bottom: 10vh;
-}
+
 .projects-conatiner {
   display: flex;
   flex-direction: column;
@@ -126,10 +87,24 @@ svg {
   width: 100%;
   margin-bottom: 20vh;
 }
+.projects-conatiner h1 {
+  font-size: 10vh;
+  margin: 5vh;
+}
 .projects-cards {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 70vw;
   flex-wrap: wrap;
+}
+.copyrights {
+  background-color: rgb(59, 59, 59);
+  color: white;
+  width: 100%;
+  height: 10vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2vh;
 }

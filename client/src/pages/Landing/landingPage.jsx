@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+
 import LoginForm from "../../components/loginForm";
 import RegisterForm from "../../components/registerForm";
+
 import { Button, Modal } from "react-bootstrap";
-import img3 from "../../assets/3.png";
 
 import "./landing.css";
 
@@ -16,6 +17,10 @@ const LandingPage = (props) => {
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  useEffect(() => {
+    if (localStorage.getItem("token")) props.history.push("/profile");
+  }, []);
 
   return (
     <div className="landing">
@@ -41,16 +46,13 @@ const LandingPage = (props) => {
             {" "}
             Simplest, Quickest & Carefree way to deploy your wordpress site to
             the cloud. <br /> Zero messing from you in deployment, our
-            beast-automative system will take care of anything you need and{" "}
-            <br /> store your website in AWS servers, just by a CLICK of a
-            button.{" "}
+            beast-automative system will take care of anything you need and
+            store your website in AWS servers, just by a CLICK of a button.{" "}
           </p>
-          <Button variant="btn btn-primary btn-lg" onClick={handleShow}>
+          <Button variant="outline-light btn-lg" onClick={handleShow}>
             Login / Register
           </Button>
         </div>
-
-        <img src={img3} alt="img3" />
 
         <Modal show={show} onHide={handleClose}>
           <Modal.Header closeButton>

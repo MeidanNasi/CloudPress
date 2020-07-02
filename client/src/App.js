@@ -1,11 +1,13 @@
 import React from "react";
 import { Route, Switch, BrowserRouter as Router } from "react-router-dom";
+
 import LoginForm from "./components/loginForm";
 import RegisterForm from "./components/registerForm";
-import "./App.css";
 import Profile from "./pages/Profile/profilePage";
 import LandingPage from "./pages/Landing/landingPage";
 import ProtectedRoute from "./components/protectedRoute";
+
+import "./App.css";
 
 function App() {
   return (
