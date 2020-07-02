@@ -67,10 +67,11 @@ header h1 {
 
 .projects-section {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
   color: white;
-  height: 100vh;
+  height: 60%;
   width: 100%;
   background-image: linear-gradient(
     177deg,
@@ -86,6 +87,7 @@ header h1 {
   justify-content: center;
   width: 100%;
   margin-bottom: 20vh;
+  flex-wrap: wrap;
 }
 .projects-conatiner h1 {
   font-size: 10vh;

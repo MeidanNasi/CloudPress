@@ -23,7 +23,7 @@ function ProjectCard({ title, url, creationDate, remove }) {
           <Button
             onClick={() => {
               console.log(url);
-              window.open("http://" + url, "_blank").focus();
+              window.open("http://" + url + "/wp-admin", "_blank").focus();
             }}
             variant="primary"
           >

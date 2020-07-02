@@ -91,6 +91,10 @@ const Profile = () => {
               - You always can remove/edit you projects, scroll down to watch
               your projects.
             </p>
+            <p>
+              - Your initial user name and password is: 'admin' ,
+              'adminpassword'.
+            </p>
             <Button
               id="createbtn"
               variant="btn btn-primary btn-lg"
@@ -150,7 +154,10 @@ const Profile = () => {
           title="Done!"
           onConfirm={() => setshowSuccessAlert(false)}
         >
+          <b>Your project will be ready within 60 seconds!</b> <br />
           Please Access to: {url}
+          <br /> <b>UserName:</b> admin <br /> <b>Password:</b> adminpassword{" "}
+          <br /> Please change this details using "User Settings" button.
         </SweetAlert>
       )}
 
