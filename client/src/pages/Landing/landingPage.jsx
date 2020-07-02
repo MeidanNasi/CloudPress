@@ -19,7 +19,7 @@ const LandingPage = (props) => {
   const handleShow = () => setShow(true);
 
   useEffect(() => {
-    if (localStorage.getItem("token")) props.history.push("/profile");
+    if (sessionStorage.getItem("token")) props.history.push("/profile");
   }, []);
 
   return (

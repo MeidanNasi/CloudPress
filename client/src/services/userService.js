@@ -5,7 +5,7 @@ import { apiUrl } from "../config.json";
 const apiEndpoint = apiUrl + "/users";
 const tokenKey = "token";
 
-// register a user and save its jwt to localstorage.
+// register a user and save its jwt to sessionStorage.
 export async function register(user) {
   const { data } = await httpService.post(apiEndpoint, {
     email: user.email,
@@ -13,6 +13,6 @@ export async function register(user) {
   });
   console.log(data);
   const jwt = data.token;
-  localStorage.setItem(tokenKey, jwt);
+  sessionStorage.setItem(tokenKey, jwt);
   return data.user;
 }

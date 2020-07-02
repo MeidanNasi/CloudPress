@@ -5,7 +5,7 @@ const apiEndpoint = apiUrl + "/projects";
 
 // creating new project
 export async function createProject(projName) {
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
   try {
     const res = await httpService.post(
       apiEndpoint,
@@ -19,7 +19,7 @@ export async function createProject(projName) {
 }
 // getting all projects
 export async function getProjects() {
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
   try {
     const response = await httpService.get(apiEndpoint, {
       headers: { Authorization: `Bearer ${token}` },
@@ -32,7 +32,7 @@ export async function getProjects() {
 }
 // removing project by given id
 export async function removeProject(id) {
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
   try {
     const res = await httpService.delete(apiEndpoint + "/" + id, {
       headers: { Authorization: `Bearer ${token}` },

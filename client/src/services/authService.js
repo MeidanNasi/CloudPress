@@ -7,7 +7,7 @@ const tokenKey = "token";
 
 httpService.setJwt(getJwt());
 
-// login a user and save its jwt to localstorage.
+// login a user and save its jwt to sessionStorage.
 export async function login(email, password) {
   const { data } = await httpService.post(apiEndpoint + "login", {
     email,
@@ -15,23 +15,23 @@ export async function login(email, password) {
   });
 
   const { token, user } = data;
-  localStorage.setItem(tokenKey, token);
+  sessionStorage.setItem(tokenKey, token);
   return user;
 }
 
 export function loginWithJwt(jwt) {
-  localStorage.setItem(tokenKey, jwt);
+  sessionStorage.setItem(tokenKey, jwt);
 }
 
-// logut a user and remove its jwt from localstorage.
+// logut a user and remove its jwt from sessionStorage.
 export function logout() {
-  localStorage.removeItem(tokenKey);
+  sessionStorage.removeItem(tokenKey);
 }
 
 // getting current user due to its jwt decoded information.
 export function getCurrentUser() {
   try {
-    const jwt = localStorage.getItem(tokenKey);
+    const jwt = sessionStorage.getItem(tokenKey);
     return jwtDecode(jwt);
   } catch (ex) {
     return null;
@@ -49,7 +49,7 @@ export async function getCurrentUserName() {
 }
 
 export function getJwt() {
-  return localStorage.getItem(tokenKey);
+  return sessionStorage.getItem(tokenKey);
 }
 
 export default {
