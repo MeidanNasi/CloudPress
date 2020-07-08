@@ -11,7 +11,6 @@ export async function register(user) {
     email: user.email,
     password: user.password,
   });
-  console.log(data);
   const jwt = data.token;
   sessionStorage.setItem(tokenKey, jwt);
   return data.user;

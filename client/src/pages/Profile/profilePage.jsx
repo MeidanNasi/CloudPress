@@ -14,7 +14,7 @@ import ProjectCard from "./../../components/projectCard";
 
 import "./profile.css";
 
-const Profile = () => {
+const Profile = (props) => {
   const [user, setUser] = useState("");
   const [projects, setProjects] = useState([]);
   const [url, setUrl] = useState(null);
@@ -42,7 +42,7 @@ const Profile = () => {
 
   const handleLogOut = () => {
     logout();
-    window.location.reload(true);
+    props.history.push("/");
   };
 
   const handleRemove = async (id) => {
