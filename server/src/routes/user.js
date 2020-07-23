@@ -41,7 +41,7 @@ router.get("/api/users/me", auth, async (req, res) => {
   try {
     res.send(req.user);
   } catch (e) {
-    res.status(500).send();
+    res.status(500).send(e);
   }
 });
 
@@ -55,7 +55,7 @@ router.post("/api/users/login", async (req, res) => {
     const token = await user.generateAuthToken();
     res.send({ user, token });
   } catch (e) {
-    res.status(400).send();
+    res.status(400).send(e);
   }
 });
 
@@ -68,7 +68,7 @@ router.post("/api/users/logout", auth, async (req, res) => {
     await req.user.save();
     res.send();
   } catch (e) {
-    res.status(500).send();
+    res.status(500).send(e);
   }
 });
 
@@ -80,7 +80,7 @@ router.post("/api/users/logoutAll", auth, async (req, res) => {
 
     res.send(200);
   } catch (e) {
-    res.status(500).send();
+    res.status(500).send(e);
   }
 });
 
@@ -91,7 +91,7 @@ router.delete("/api/users/me", auth, async (req, res) => {
     sendByeByeEmail(req.user.email, req.user.name);
     res.send(req.user);
   } catch (e) {
-    res.status(500).send();
+    res.status(500).send(e);
   }
 });
 

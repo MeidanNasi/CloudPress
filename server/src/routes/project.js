@@ -59,7 +59,7 @@ const getProject = async (req, res) => {
 
     if (!project) {
       if (res) {
-        return res.status(404).send();
+        return res.status(404).send(e);
       }
       throw new Error("Could not find project");
     }
@@ -102,7 +102,7 @@ router.patch("/api/projects/:id", auth, async (req, res) => {
     });
 
     if (!project) {
-      return res.status(404).send();
+      return res.status(404).send({ error: "Couldn't find project!" });
     }
 
     updates.forEach((update) => (project[update] = req.body[update]));
@@ -123,7 +123,7 @@ const deleteProjectFromDb = async (req, res) => {
 
     if (!project) {
       if (res) {
-        return res.status(404).send();
+        return res.status(404).send({ error: "Couldn't find project!" });
       }
       throw new Error("Could not find project");
     }
