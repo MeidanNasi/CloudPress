@@ -24,7 +24,7 @@ class RegisterForm extends Form {
       console.log(user);
       this.props.history.push("/profile");
     } catch (error) {
-      alert(error);
+      alert("User already exists!");
     }
   };
 
