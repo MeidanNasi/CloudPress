@@ -22,7 +22,7 @@ class LoginForm extends Form {
       await login(this.state.data.email, this.state.data.password);
       this.props.history.push("/profile");
     } catch (error) {
-      alert(error);
+      alert("Invalid username or password");
     }
   };
 
